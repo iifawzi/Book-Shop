@@ -1,6 +1,16 @@
 const fs = require('fs');
 const path = require ('path');
-
+const p = path.join(
+    path.dirname(process.mainModule.filename),'data','products.json');
+const getProducsFromFile = cb =>{
+    fs.readFile(p,(error,fileContent)=>{
+        if (error){
+           cb([]);
+        }else {
+            cb(JSON.parse(fileContent));
+        }
+    });
+};
 
 const products = [];
 module.exports = class Product {
@@ -9,29 +19,16 @@ module.exports = class Product {
     }
 
         save(){
-const p = path.join(path.dirname(process.mainModule.filename),'data','products.json');
-
-fs.readFile(p,(error,fileContent)=>{
-    let products =[];
-    if (!error){
-        products = JSON.parse(fileContent); // parse Convert from json to array
-    };
+           
+getProducsFromFile(products =>{
     products.push(this);
-    fs.writeFile(p,JSON.stringify(products), (err)=>{
+    fs.writeFile(p,JSON.stringify(products),err=>{
         console.log(err);
-    }) // Stringify Convert from array to json
-});
-
+    })
+})
         }
 
         static fetchAll(cb){
-            const p = path.join(
-                path.dirname(process.mainModule.filename),'data','products.json');
-            fs.readFile(p,(error,fileContent)=>{
-                if (error){
-                   cb([]);
-                };
-                cb(JSON.parse(fileContent));
-            });
+            getProducsFromFile(cb);
         } // static made this function accessable without initialise a new object. look for product controller line 18 
 }
