@@ -22,7 +22,7 @@ module.exports = class Product {
     }
 
         save(){
-           
+           this.id = Math.floor(Math.random()*10000).toString();
 getProducsFromFile(products =>{
     products.push(this);
     fs.writeFile(p,JSON.stringify(products),err=>{
@@ -34,4 +34,10 @@ getProducsFromFile(products =>{
         static fetchAll(cb){
             getProducsFromFile(cb);
         } // static made this function accessable without initialise a new object. look for product controller line 18 
+        static findById(id,cb){
+            getProducsFromFile(products=>{
+                const product = products.find(p=> p.id === id);
+                cb(product);
+            });
+        }
 }
